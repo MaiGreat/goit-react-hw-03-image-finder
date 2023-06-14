@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { fetchImages } from "./servise/api";
 import { Button } from "./Button/Button";
+import { Loader } from "./Loader/Loader";
 
 
 export class App extends Component {
@@ -35,9 +36,10 @@ export class App extends Component {
       if (this.state.images.length === 0) {
         this.setState({ isEmpty: true });
       }
+      
       this.setState( prevState => ({
       images: [...prevState.images, ...hits],
-      totalImages: totalHits
+        totalImages: totalHits
       }));
     } catch (error) {
       this.setState({ error: error.message });
@@ -57,7 +59,7 @@ onLoadMore = () => {
 }
 
   render() {
-    const { images, totalImages } =
+    const { images, totalImages, isLoading } =
       this.state;
     return (
       <div> 
@@ -65,7 +67,7 @@ onLoadMore = () => {
           onSubmit={this.onSubmit}
           images={images}
         />
-
+        {isLoading && <Loader />}
         {totalImages > images.length && ( 
           <Button onClick={this.onLoadMore} />
         )}
