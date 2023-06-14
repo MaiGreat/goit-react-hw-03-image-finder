@@ -1,60 +1,75 @@
 import React, { Component } from "react";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { fetchImages } from "./servise/api";
+import { Button } from "./Button/Button";
+
 
 export class App extends Component {
   state = {
     query: '',
     images: [],
     page: 1,
-    isLoding: false,
+    totalHits: 0,
+    isLoading: false,
     isEmpty: false,
     isVisible: false,
     error: null
   }
-  
+
   componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
-      this.getImges(query, page);
+      this.getImages(query, page);
     }
   }
   
-  getImges = async (query, page) => {
-    if (!query) {
-      return;
-    }
-    this.setState({ isLoding: true });
+  getImages = async () => {
+
+    this.setState({ isLoading: true });
     try {
-      const { images: result, totalImages } = await fetchImages(
+      const { hits, totalHits } = await fetchImages(
         this.state.query,
         this.state.page
       );
-      if (result.length === 0) {
+
+      if (this.state.images.length === 0) {
         this.setState({ isEmpty: true });
       }
-      this.setState(prevState => ({results: [...prevState.results, ...result],
-        // isVisible
-      }))
+      this.setState( prevState => ({
+      images: [...prevState.images, ...hits],
+      totalImages: totalHits
+      }));
     } catch (error) {
-      this.setState({error: error.message})
+      this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
     }
   }
 
-      onSubmit = value => {
-        this.setState({ query: value, page: 1, images: [], error: null, isEmpty: false });
+  onSubmit = value => {
+    this.setState({ query: value, page: 1, images: [], error: null, isEmpty: false });
   }
   
-  onLoadMore = () => (
-    prevState => ({page: prevState.page +1 })
-  )
+onLoadMore = () => {
+  this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+}
 
   render() {
+    const { images, totalImages } =
+      this.state;
     return (
       <div> 
-        <ImageGallery />
+        <ImageGallery
+          onSubmit={this.onSubmit}
+          images={images}
+        />
+
+        {totalImages > images.length && ( 
+          <Button onClick={this.onLoadMore} />
+        )}
+        
       </div>
     )
   }

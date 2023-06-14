@@ -15,7 +15,6 @@ handleInput = evt => {
     this.setState({
         query: evt.currentTarget.value.toLowerCase().trim(),
     });
-    console.log(this.state);
     }
     
     handleOnSubmit = e => {

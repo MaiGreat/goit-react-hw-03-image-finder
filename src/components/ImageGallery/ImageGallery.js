@@ -1,21 +1,24 @@
-import React, { Component } from "react";
+
+import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
 import Searchbar from "components/Searchbar/Searchbar";
-
-export class ImageGallery extends Component {
-
-
+import css from './ImageGallery.module.css'
+// import PropTypes from 'prop-types';
 
 
-    render() {
-
-        return (
+export const ImageGallery = ({ onSubmit, images }) => {
+    return (
         <>
-                <Searchbar onSubmit={ this.onSubmit} />
-                <ul className="gallery">
-                    
-                </ul>
+            <Searchbar onSubmit={onSubmit} />
+            <ul className={css.gallery}>
+                {images.map(({ id, webformatURL, tags, largeImageURL }) => (
+                    <ImageGalleryItem
+                        key={id}
+                        url={webformatURL}
+                        alt={tags}
+                        largeImageURL={largeImageURL}
+                    />
+                ))}
+            </ul>
         </>
-
-        )
-    }
+    );
 }
