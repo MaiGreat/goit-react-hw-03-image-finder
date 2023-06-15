@@ -7,6 +7,6 @@ const BASE_URL = 'https://pixabay.com';
 export const fetchImages = async (query, page) => {
     const response = await axios.get(`${BASE_URL}/api/?key=${API_KEY}&q=${query}&page=${page}`);
     const data = response.data;
-    console.log(data);
+    // console.log(data);
     return data;
 };
